@@ -20,9 +20,10 @@ class RAGEnging:
             base_url="https://api.deepseek.com"
         )
 
-    def search_and_answer(self, question: str, manual_context: list[str] | None = None):
+    def search_and_answer(self, question: str, username: str, manual_context: list[str] | None = None):
         manual_context = manual_context or []
-        docs = self.vector_db.similarity_search(question, k=3)
+        docs = self.vector_db.similarity_search(question, k=3,filter={"owner": username})
+        print(f">>> [RAG] Retrieved {len(docs)} docs for owner={username}")
         retrieved_context = [d.page_content for d in docs]
         merged_context = retrieved_context + manual_context
         if not merged_context:
